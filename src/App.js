@@ -1,52 +1,45 @@
-import {React, useState} from "react";
+import React, { useState} from "react";
 import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route, Navigate } from "react-router-dom"
 import Root, { ROUTES } from "./components/root/Root";
 import { AppointmentsPage } from "./containers/appointmentsPage/AppointmentsPage";
 import { ContactsPage } from "./containers/contactsPage/ContactsPage";
-import { ContactForm } from "./components/contactForm/ContactForm";
+
 
 function App() {
-  /*
-  Define state variables for 
-  contacts and appointments 
-  */
- const[contacts, setContact] = useState([]);
- const[appointment, setAppointment] = useState([])
-  /*
-  Implement functions to add data to
-  contacts and appointments
-  */
-const addContact = (newName, newPhone, newEmail) => {
 
- setContact((prevContact)=>{
-  const contact = {
-    name: newName,
-    phone: newPhone,
-    email: newEmail
-  };
-  return [...prevContact, contact]
-});
+ const[contacts, setContacts] = useState([]);
+ const[appointments, setAppointments] = useState([])
 
+ const addAppointment = (name, contact, date, time) => {
+  setAppointments([
+    ...appointments,
+    {
+      name: name,
+      contact: contact,
+      date: date,
+      time: time,
+    },
+  ]);
 };
 
- const addAppointment = (newName, newPhone, newEmail) => {
-  setAppointment((prevAppointment)=>{
-    const appointment = {
-      name: newName,
-      phone: newPhone,
-      email: newEmail
-    };
-    return [...prevAppointment, appointment]
-  })
- }
+  const addContact = (name, phone, email) => {
+    setContacts([
+      ...contacts,
+      {
+        name: name,
+        phone: phone,
+        email: email,
+      },
+    ]);
+  };
+
+ 
 
   const router = createBrowserRouter(createRoutesFromElements(
     <Route path="/" element={ <Root/> }>
       <Route index element={ <Navigate to={ROUTES.CONTACTS} replace/> }/>
-      <Route path={ROUTES.CONTACTS} element={ <ContactsPage/>}addContact={addContact} conacts={contacts}> 
-        <Route index element={<ContactForm/>}/>
-      </Route>
-      <Route path={ROUTES.APPOINTMENTS} element={ <AppointmentsPage addAppointment={addAppointment} appointment={appointment} /> /* Add props to AppointmentsPage */ }/>
+      <Route path={ROUTES.CONTACTS} element={ <ContactsPage addContact={addContact} contacts={contacts}/>} /> 
+      <Route path={ROUTES.APPOINTMENTS} element={ <AppointmentsPage addAppointment={addAppointment} appointments={appointments} contacts={contacts}/> /* Add props to AppointmentsPage */ }/>
     </Route>
   ));
   
